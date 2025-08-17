@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visa Application App</title>
+<style>
+  body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background: #f5f7fa; 
+    margin: 0; 
+    padding: 20px; 
+    color: #333;
+  }
+  .container { 
+    max-width: 600px; 
+    margin: 0 auto; 
+    background: #fff; 
+    padding: 25px; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  h2 { 
+    margin-top: 0; 
+    text-align: center; 
+    color: #2c3e50;
+  }
+  .page { 
+    display: none; 
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .active { 
+    display: block; 
+  }
+  .field { 
+    margin-bottom: 20px; 
+  }
+  label { 
+    display: block; 
+    margin-bottom: 8px; 
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  input, select, textarea { 
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 8px; 
+    border: 1px solid #ddd; 
+    font-size: 16px;
+    transition: border 0.3s;
+  }
+  input:focus, select:focus {
+    border-color: #4f46e5;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+  }
+  .nav { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-top: 30px; 
+  }
+  button { 
+    padding: 12px 24px; 
+    border: none; 
+    border-radius: 8px; 
+    font-weight: 600; 
+    font-size: 16px; 
+    cursor: pointer; 
+    transition: all 0.3s;
+  }
+  #nextBtn, #submitBtn { 
+    background: #4f46e5; 
+    color: #fff; 
+  }
+  #nextBtn:hover, #submitBtn:hover { 
+    background: #4338ca; 
+  }
+  #backBtn { 
+    background: #e5e7eb; 
+    color: #4b5563; 
+  }
+  #backBtn:hover { 
+    background: #d1d5db; 
+  }
+  button[disabled] { 
+    background: #e5e7eb !important; 
+    color: #9ca3af !important; 
+    cursor: not-allowed; 
+  }
+  .progress-container {
+    width: 100%;
+    background-color: #e5e7eb;
+    border-radius: 8px;
+    margin: 20px 0;
+  }
+  .progress-bar {
+    height: 8px;
+    border-radius: 8px;
+    background-color: #4f46e5;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .progress-text {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #4b5563;
+  }
+  .summary { 
+    font-size: 16px; 
+    background: #f9fafb;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+  }
+  .summary h3 { 
+    margin-top: 0; 
+    color: #4f46e5;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 10px;
+  }
+  .summary p { 
+    margin: 8px 0; 
+    line-height: 1.5;
+  }
+  .summary b {
+    color: #2c3e50;
+    display: inline-block;
+    min-width: 180px;
+  }
+  .center { 
+    text-align: center; 
+  }
+  .verification-box {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .verification-box h3 {
+    margin-top: 0;
+    color: #166534;
+  }
+  .screenshot-btn {
+    background: #10b981;
+    margin-top: 20px;
+  }
+  .screenshot-btn:hover {
+    background: #0d9b6c;
+  }
+  .success-message {
+    text-align: center;
+    padding: 20px;
+  }
+  .success-message h2 {
+    color: #166534;
+  }
+  .success-icon {
+    font-size: 60px;
+    color: #10b981;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>Visa Application</h2>
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-text" id="progressText">Page 1 of 5</div>
+
+  <!-- Pages -->
+  <form id="visaForm">
+    <!-- Page 1 -->
+    <div class="page active" id="page1">
+      <div class="field">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" required>
+      </div>
+      <div class="field">
+        <label for="fatherName">Father's Name</label>
+        <input type="text" id="fatherName" name="fatherName" required>
+      </div>
+      <div class="field">
+        <label for="motherName">Mother's Name</label>
+        <input type="text" id="motherName" name="motherName" required>
+      </div>
+      <div class="field">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" name="dob" required>
+      </div>
+      <div class="field">
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender" required>
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- OTP Verification -->
+    <div class="page" id="otpPage">
+      <div class="verification-box">
+        <h3>Email Verification</h3>
+        <p>We've sent a 4-digit OTP to your email address. Please enter it below to verify your email.</p>
+        <div class="field">
+          <label for="otp">OTP Code</label>
+          <input type="text" id="otp" name="otp" placeholder="Enter 4-digit OTP" maxlength="4" pattern="\d{4}" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page 2 -->
+    <div class="page" id="page2">
+      <div class="field">
+        <label for="nationality">Nationality</label>
+        <input type="text" id="nationality" name="nationality" required>
+      </div>
+      <div class="field">
+        <label for="maritalStatus">Marital Status</label>
+        <select id="maritalStatus" name="maritalStatus" required>
+          <option value="">Select Marital Status</option>
+          <option value="Single">Single</option>
+          <option value="Married">Married</option>
+          <option value="Divorced">Divorced</option>
+          <option value="Widowed">Widowed</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="passportNo">Passport Number</label>
+        <input type="text" id="passportNo" name="passportNo" required>
+      </div>
+      <div class="field">
+        <label for="passportIssue">Passport Issue Date</label>
+        <input type="date" id="passportIssue" name="passportIssue" required>
+      </div>
+      <div class="field">
+        <label for="passportExpiry">Passport Expiry Date</label>
+        <input type="date" id="passportExpiry" name="passportExpiry" required>
+      </div>
+    </div>
+
+    <!-- Page 3 -->
+    <div class="page" id="page3">
+      <div class="field">
+        <label for="visaType">Visa Type</label>
+        <select id="visaType" name="visaType" required>
+          <option value="">Select Visa Type</option>
+          <option value="Visit">Visit</option>
+          <option value="Study">Study</option>
+          <option value="Work">Work</option>
+          <option value="Business">Business</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="countryTo">Country Applying To</label>
+        <input type="text" id="countryTo" name="countryTo" required>
+      </div>
+      <div class="field">
+        <label for="purpose">Purpose of Visit</label>
+        <textarea id="purpose" name="purpose" rows="2" required></textarea>
+      </div>
+      <div class="field">
+        <label for="stayDuration">Intended Duration of Stay</label>
+        <select id="stayDuration" name="stayDuration" required>
+          <option value="">Select Duration</option>
+          <option value="Less than 1 week">Less than 1 week</option>
+          <option value="1-2 weeks">1-2 weeks</option>
+          <option value="3-4 weeks">3-4 weeks</option>
+          <option value="1-3 months">1-3 months</option>
+          <option value="3-6 months">3-6 months</option>
+          <option value="6-12 months">6-12 months</option>
+          <option value="More than 1 year">More than 1 year</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Previous Visa History</label>
+        <div style="margin-bottom: 10px;">
+          <input type="radio" id="prevVisaYes" name="prevVisaHistory" value="Yes" required>
+          <label for="prevVisaYes" style="display: inline; font-weight: normal;">Yes</label>
+          <input type="radio" id="prevVisaNo" name="prevVisaHistory" value="No" style="margin-left: 15px;">
+          <label for="prevVisaNo" style="display: inline; font-weight: normal;">No</label>
+        </div>
+        <textarea id="prevVisaDetails" name="prevVisaDetails" rows="2" placeholder="If yes, please provide details"></textarea>
+      </div>
+    </div>
+
+    <!-- Page 4 -->
+    <div class="page" id="page4">
+      <div class="field">
+        <label for="currentAddress">Current Address</label>
+        <textarea id="currentAddress" name="currentAddress" rows="3" required></textarea>
+      </div>
+      <div class="field">
+        <label for="permanentAddress">Permanent Address</label>
+        <textarea id="permanentAddress" name="permanentAddress" rows="3" required></textarea>
+      </div>
+      <div class="field">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" required>
+      </div>
+      <div class="field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="field">
+        <label for="emergency">Emergency Contact Number</label>
+        <input type="tel" id="emergency" name="emergency" required>
+      </div>
+    </div>
+
+    <!-- Page 5 -->
+    <div class="page" id="page5">
+      <div class="field">
+        <label for="status">Employment / Study Status</label>
+        <select id="status" name="status" required>
+          <option value="">Select Status</option>
+          <option value="Employed">Employed</option>
+          <option value="Self-Employed">Self-Employed</option>
+          <option value="Student">Student</option>
+          <option value="Unemployed">Unemployed</option>
+          <option value="Retired">Retired</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="orgName">Employer / Institution Name</label>
+        <input type="text" id="orgName" name="orgName">
+      </div>
+      <div class="field">
+        <label for="income">Monthly Income (if applicable)</label>
+        <input type="text" id="income" name="income">
+      </div>
+      <div class="field">
+        <label for="sponsorship">Sponsorship Details</label>
+        <textarea id="sponsorship" name="sponsorship" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label>Any Medical Conditions</label>
+        <div style="margin-bottom: 10px;">
+          <input type="radio" id="medicalYes" name="medicalConditions" value="Yes" required>
+          <label for="medicalYes" style="display: inline; font-weight: normal;">Yes</label>
+          <input type="radio" id="medicalNo" name="medicalConditions" value="No" style="margin-left: 15px;">
+          <label for="medicalNo" style="display: inline; font-weight: normal;">No</label>
+        </div>
+        <textarea id="medicalDetails" name="medicalDetails" rows="2" placeholder="If yes, please provide details"></textarea>
+      </div>
+    </div>
+
+    <!-- 2FA Verification -->
+    <div class="page" id="twofaPage">
+      <div class="verification-box">
+        <h3>Two-Factor Authentication</h3>
+        <p>For security purposes, please enter the 6-digit verification code from your authenticator app.</p>
+        <div class="field">
+          <label for="twofa">2FA Code</label>
+          <input type="text" id="twofa" name="twofa" placeholder="Enter 6-digit code" maxlength="6" pattern="\d{6}" required>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Page -->
+    <div class="page" id="summaryPage">
+      <div id="summary" class="summary"></div>
+      <div class="center">
+        <button type="button" class="screenshot-btn" onclick="saveScreenshot()">Save Screenshot</button>
+      </div>
+    </div>
+
+    <!-- Success Page -->
+    <div class="page" id="successPage">
+      <div class="success-message">
+        <div class="success-icon">✓</div>
+        <h2>Application Submitted Successfully!</h2>
+        <p>Your visa application has been received. You will get a confirmation email shortly.</p>
+        <p>Your application reference number: <strong id="refNumber"></strong></p>
+        <button type="button" onclick="location.reload()">Start New Application</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="nav">
+    <button id="backBtn" onclick="prevPage()">Back</button>
+    <button id="nextBtn" onclick="nextPage()">Next</button>
+  </div>
+</div>
+
+<!-- Include html2canvas library for screenshot functionality -->
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script>
+// Application state
+const pages = ["page1", "otpPage", "page2", "page3", "page4", "page5", "twofaPage", "summaryPage", "successPage"];
+let currentPage = 0;
+const progressBar = document.getElementById("progressBar");
+const progressText = document.getElementById("progressText");
+const backBtn = document.getElementById("backBtn");
+const nextBtn = document.getElementById("nextBtn");
+const form = document.getElementById("visaForm");
+
+// Initialize the app
+function init() {
+  showPage(currentPage);
+  updateProgress();
+  backBtn.disabled = true;
+}
+
+// Show the current page
+function showPage(index) {
+  // Hide all pages
+  pages.forEach(pageId => {
+    document.getElementById(pageId).classList.remove("active");
+  });
+  
+  // Show current page
+  document.getElementById(pages[index]).classList.add("active");
+  
+  // Update button states
+  backBtn.disabled = (index === 0);
+  
+  // Update next button text
+  if (index === pages.length - 2) { // Summary page
+    nextBtn.textContent = "Submit";
+  } else if (index === pages.length - 1) { // Success page
+    nextBtn.style.display = "none";
+    backBtn.style.display = "none";
+  } else if (index === 1 || index === 6) { // Verification pages
+    nextBtn.textContent = "Verify";
+  } else {
+    nextBtn.textContent = "Next";
+  }
+  
+  // Update progress
+  updateProgress();
+}
+
+// Update progress bar and text
+function updateProgress() {
+  const totalPages = 5; // Only count the main form pages
+  let progress = 0;
+  let progressTextStr = "";
+  
+  if (currentPage === 0) {
+    progress = 20;
+    progressTextStr = "Page 1 of 5";
+  } else if (currentPage === 1) {
+    progress = 20;
+    progressTextStr = "Email Verification";
+  } else if (currentPage === 2) {
+    progress = 40;
+    progressTextStr = "Page 2 of 5";
+  } else if (currentPage === 3) {
+    progress = 60;
+    progressTextStr = "Page 3 of 5";
+  } else if (currentPage === 4) {
+    progress = 80;
+    progressTextStr = "Page 4 of 5";
+  } else if (currentPage === 5) {
+    progress = 100;
+    progressTextStr = "Page 5 of 5";
+  } else if (currentPage === 6) {
+    progress = 100;
+    progressTextStr = "2FA Verification";
+  } else if (currentPage === 7) {
+    progress = 100;
+    progressTextStr = "Application Summary";
+  } else {
+    progress = 100;
+    progressTextStr = "Complete";
+  }
+  
+  progressBar.style.width = `${progress}%`;
+  progressText.textContent = progressTextStr;
+}
+
+// Navigate to next page
+function nextPage() {
+  // Validate current page before proceeding
+  if (!validateCurrentPage()) {
+    return;
+  }
+  
+  // Special handling for certain pages
+  if (currentPage === 0) { // After page 1, go to OTP verification
+    currentPage = 1;
+  } else if (currentPage === 1) { // OTP verification
+    // In a real app, you would verify the OTP here
+    currentPage = 2;
+  } else if (currentPage === 5) { // After last form page, go to 2FA
+    currentPage = 6;
+  } else if (currentPage === 6) { // 2FA verification
+    // In a real app, you would verify the 2FA code here
+    generateSummary();
+    currentPage = 7;
+  } else if (currentPage === 7) { // Summary page - submit form
+    submitForm();
+    currentPage = 8;
+  } else {
+    currentPage++;
+  }
+  
+  showPage(currentPage);
+}
+
+// Navigate to previous page
+function prevPage() {
+  // Special handling for certain pages
+  if (currentPage === 1) { // Going back from OTP to page 1
+    currentPage = 0;
+  } else if (currentPage === 6) { // Going back from 2FA to last form page
+    currentPage = 5;
+  } else {
+    currentPage--;
+  }
+  
+  showPage(currentPage);
+}
+
+// Validate current page before proceeding
+function validateCurrentPage() {
+  const currentPageId = pages[currentPage];
+  const inputs = document.getElementById(currentPageId).querySelectorAll("[required]");
+  
+  for (let input of inputs) {
+    if (!input.value.trim()) {
+      alert(`Please fill in the ${input.labels[0].textContent} field`);
+      input.focus();
+      return false;
+    }
+    
+    // Special validation for OTP
+    if (input.name === "otp" && input.value.length !== 4) {
+      alert("Please enter a valid 4-digit OTP code");
+      input.focus();
+      return false;
+    }
+    
+    // Special validation for 2FA
+    if (input.name === "twofa" && input.value.length !== 6) {
+      alert("Please enter a valid 6-digit 2FA code");
+      input.focus();
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+// Generate the summary page content
+function generateSummary() {
+  const formData = new FormData(form);
+  const data = {};
+  formData.forEach((value, key) => {
+    data[key] = value;
+  });
+  
+  // Generate a random visa application number
+  const refNumber = "VISA-" + Math.floor(100000 + Math.random() * 900000);
+  document.getElementById("refNumber").textContent = refNumber;
+  
+  let summaryHTML = `
+    <h3>Visa Application Summary</h3>
+    <p><b>Application Reference:</b> ${refNumber}</p>
+    <p><b>Passport Number:</b> ${data.passportNo}</p>
+    
+    <h3>Personal Information</h3>
+    <p><b>Full Name:</b> ${data.fullName}</p>
+    <p><b>Father's Name:</b> ${data.fatherName}</p>
+    <p><b>Mother's Name:</b> ${data.motherName}</p>
+    <p><b>Date of Birth:</b> ${data.dob}</p>
+    <p><b>Gender:</b> ${data.gender}</p>
+    <p><b>Nationality:</b> ${data.nationality}</p>
+    <p><b>Marital Status:</b> ${data.maritalStatus}</p>
+    
+    <h3>Passport Details</h3>
+    <p><b>Passport Number:</b> ${data.passportNo}</p>
+    <p><b>Issue Date:</b> ${data.passportIssue}</p>
+    <p><b>Expiry Date:</b> ${data.passportExpiry}</p>
+    
+    <h3>Visa Information</h3>
+    <p><b>Visa Type:</b> ${data.visaType}</p>
+    <p><b>Country:</b> ${data.countryTo}</p>
+    <p><b>Purpose:</b> ${data.purpose}</p>
+    <p><b>Duration:</b> ${data.stayDuration}</p>
+    <p><b>Previous Visa History:</b> ${data.prevVisaHistory} ${data.prevVisaDetails ? `- ${data.prevVisaDetails}` : ''}</p>
+    
+    <h3>Contact Information</h3>
+    <p><b>Current Address:</b> ${data.currentAddress}</p>
+    <p><b>Permanent Address:</b> ${data.permanentAddress}</p>
+    <p><b>Phone:</b> ${data.phone}</p>
+    <p><b>Email:</b> ${data.email}</p>
+    <p><b>Emergency Contact:</b> ${data.emergency}</p>
+    
+    <h3>Employment & Health</h3>
+    <p><b>Employment Status:</b> ${data.status}</p>
+    <p><b>Employer/Institution:</b> ${data.orgName}</p>
+    <p><b>Monthly Income:</b> ${data.income}</p>
+    <p><b>Sponsorship:</b> ${data.sponsorship}</p>
+    <p><b>Medical Conditions:</b> ${data.medicalConditions} ${data.medicalDetails ? `- ${data.medicalDetails}` : ''}</p>
+  `;
+  
+  document.getElementById("summary").innerHTML = summaryHTML;
+}
+
+// Submit the form (simulated)
+function submitForm() {
+  // In a real app, you would send the data to a server here
+  console.log("Form submitted", new FormData(form));
+  
+  // Simulate server processing delay
+  setTimeout(() => {
+    showPage(currentPage);
+  }, 1000);
+}
+
+// Save screenshot of the summary
+function saveScreenshot() {
+  const summaryElement = document.getElementById("summary");
+  
+  html2canvas(summaryElement, {
+    scale: 2,
+    logging: false,
+    useCORS: true,
+    allowTaint: true
+  }).then(canvas => {
+    // Create download link
+    const link = document.createElement('a');
+    link.download = 'visa-application-summary.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    
+    // Also show a success message
+    alert("Screenshot saved successfully!");
+  });
+}
+
+// Initialize the app when page loads
+window.onload = init;
+</script>
+</body>
+</html>
